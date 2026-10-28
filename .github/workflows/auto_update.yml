@@ -4,7 +4,7 @@ on:
   schedule:
     # 毎日 21:00 UTC (日本時間 翌朝 06:00) に自動実行
     - cron: '0 21 * * *'
-  workflow_dispatch: # 手動で今すぐ実行したい時用のボタンも有効化
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -21,7 +21,9 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: トレンド収集スクリプトの実行
+      - name: トレンド収集＆Geminiコピー生成の実行
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/update_trends.py
 
       - name: 更新データをGitHubへ自動コミット＆プッシュ
@@ -29,4 +31,4 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions Bot"
           git add data/products.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: 世界のトレンドデータを自動更新" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: Gemini AIによるトレンド商品データの自動更新" && git push)
