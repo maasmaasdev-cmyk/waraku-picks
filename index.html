@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>和楽百貨 (WARAKU PICKS) | 世界と日本の「今すぐ欲しい」が集まる特選案内所</title>
+  <meta name="description" content="世界中のトレンドから厳選したガジェット、キッチン道具、暮らしの逸品、グルメ・ヘルスケアまで。毎日自動更新でお届けする和モダン・キュレーションサイト。">
+  <!-- Google Fonts: 見出しに風合いのある明朝・丸ゴシック、本文に読みやすいゴシック -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            washi: '#FAF7F0',     // 生成り（背景）
+            sumi: '#2B2B2B',      // 墨色（文字）
+            akane: '#D9381E',     // 茜色（メインCTA）
+            matcha: '#3B6E52',    // 抹茶（バッジ・カテゴリ）
+            kincha: '#C88A2B',    // 金茶（トレンド・星）
+            sakura: '#F6E6E4'     // 桜鼠（カードアクセント）
+          },
+          fontFamily: {
+            maru: ['"Kiwi Maru"', 'serif'],
+            sans: ['"Zen Kaku Gothic New"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FAF7F0;
+      background-image: radial-gradient(#e5e0d5 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: #2B2B2B;
+    }
+    .wa-card {
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+      border: 2px solid #2B2B2B;
+      box-shadow: 4px 4px 0px #2B2B2B;
+    }
+    .wa-card:hover {
+      transform: translate(-2px, -4px);
+      box-shadow: 7px 7px 0px #2B2B2B;
+    }
+    .wa-btn {
+      border: 2px solid #2B2B2B;
+      box-shadow: 3px 3px 0px #2B2B2B;
+      transition: all 0.15s ease;
+    }
+    .wa-btn:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px #2B2B2B;
+    }
+    .wa-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0px 0px 0px #2B2B2B;
+    }
+    .noren-border {
+      border-bottom: 4px solid #2B2B2B;
+      background: repeating-linear-gradient(90deg, #D9381E, #D9381E 20px, #FAF7F0 20px, #FAF7F0 40px);
+      height: 8px;
+    }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+  <!-- 暖簾（のれん）風トップアクセント -->
+  <div class="noren-border"></div>
+
+  <!-- ヘッダー -->
+  <header class="bg-washi border-b-2 border-sumi sticky top-0 z-30 bg-opacity-95 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="bg-akane text-white font-maru text-xl px-3 py-1 rounded-full border-2 border-sumi shadow-sm">選</span>
+        <div>
+          <h1 class="font-maru text-2xl md:text-3xl font-bold tracking-wider text-sumi">和楽百貨 <span class="text-sm font-sans font-normal bg-sakura px-2 py-0.5 rounded border border-sumi ml-1">WARAKU PICKS</span></h1>
+          <p class="text-xs text-gray-600 mt-0.5">世界と日本のトレンドから「暮らしが整う・心が躍る」逸品を毎日自動収集</p>
+        </div>
+      </div>
+
+      <!-- リアルタイム検索バー -->
+      <div class="w-full md:w-80 relative">
+        <input type="text" id="searchInput" placeholder="欲しいモノ・キーワードで検索..."
+          class="w-full pl-4 pr-10 py-2 rounded-full bg-white border-2 border-sumi focus:outline-none focus:ring-2 focus:ring-akane text-sm font-bold">
+        <span class="absolute right-3 top-2.5 text-gray-500">🔍</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ヒーローバナー & 本日のトレンド速報 -->
+  <section class="max-w-6xl mx-auto px-4 pt-6 pb-2 w-full">
+    <div class="bg-sakura border-2 border-sumi rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4" style="box-shadow: 4px 4px 0px #2B2B2B;">
+      <div>
+        <span class="inline-block bg-matcha text-white text-xs font-bold px-2.5 py-1 rounded-full border border-sumi mb-2">✨ 毎日自動更新・世界のトレンド巡回中</span>
+        <h2 class="font-maru text-xl md:text-2xl font-bold text-sumi">「それどこの？」と聞かれる、名品・話題作をすぐ発見。</h2>
+        <p class="text-sm text-gray-700 mt-1">海外の最新ガジェットから、時短キッチン道具、疲れを癒やすヘルスケア、ご褒美グルメまで。ジャンルボタンや検索から1秒で見つかります。</p>
+      </div>
+      <div class="text-right shrink-0">
+        <div class="text-xs text-gray-600">最終自動巡回日時</div>
+        <div id="lastUpdated" class="font-bold text-sm bg-white px-3 py-1 rounded-lg border border-sumi mt-1 inline-block">読み込み中...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ジャンル切り替えナビゲーション -->
+  <nav class="max-w-6xl mx-auto px-4 py-4 w-full overflow-x-auto">
+    <div id="categoryTabs" class="flex gap-2 pb-2">
+      <button data-cat="all" class="cat-btn wa-btn bg-sumi text-white px-4 py-1.5 rounded-full text-sm font-bold shrink-0">すべて表示</button>
+      <button data-cat="ガジェット・デスク" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">💻 ガジェット・デスク</button>
+      <button data-cat="キッチン・料理道具" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🍳 キッチン・料理道具</button>
+      <button data-cat="睡眠・ヘルスケア" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🌿 睡眠・ヘルスケア</button>
+      <button data-cat="食品・ご褒美グルメ" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🍵 食品・ご褒美グルメ</button>
+      <button data-cat="ホビー・知育" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🎲 ホビー・知育</button>
+      <button data-cat="世界の新着トレンド" class="cat-btn wa-btn bg-kincha text-white px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🌍 世界の新着トレンド</button>
+    </div>
+  </nav>
+
+  <!-- メイン商品グリッド -->
+  <main class="max-w-6xl mx-auto px-4 py-4 flex-grow w-full">
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- JavaScriptでカードがここに自動生成されます -->
+    </div>
+    <div id="emptyState" class="hidden text-center py-12">
+      <p class="font-maru text-lg text-gray-600">該当する商品が見つかりませんでした。別のキーワードをお試しください🍵</p>
+    </div>
+  </main>
+
+  <!-- フッター（Amazonアソシエイト必須表記含む） -->
+  <footer class="bg-sumi text-washi mt-12 py-8 border-t-4 border-akane">
+    <div class="max-w-6xl mx-auto px-4 text-center text-xs space-y-2">
+      <p class="font-maru text-base text-white">和楽百貨 (WARAKU PICKS)</p>
+      <p class="text-gray-300">※当サイトはAmazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。</p>
+      <p class="text-gray-400 pt-2">&copy; 2026 WARAKU PICKS. Powered by GitHub Pages & Automated Actions.</p>
+    </div>
+  </footer>
+
+  <!-- フロントエンド制御スクリプト -->
+  <script>
+    // ★ここにあなたのAmazonアソシエイトID（トラッキングID）を設定してください★
+    const AMAZON_TAG = "j2001077maasm-22";
+
+    let allProducts = [];
+    let currentCategory = "all";
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('./data/products.json?t=' + new Date().getTime());
+        const data = await res.json();
+        allProducts = data.items || [];
+        document.getElementById('lastUpdated').textContent = data.updated_at || '本日更新';
+        renderProducts();
+      } catch (e) {
+        console.error("データ読み込みエラー:", e);
+      }
+    }
+
+    function createAmazonLink(item) {
+      if (item.asin) {
+        return `https://www.amazon.co.jp/dp/${item.asin}/?tag=${AMAZON_TAG}`;
+      }
+      const query = encodeURIComponent(item.search_keyword || item.title);
+      return `https://www.amazon.co.jp/s?k=${query}&tag=${AMAZON_TAG}`;
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      const emptyState = document.getElementById('emptyState');
+      const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+
+      const filtered = allProducts.filter(item => {
+        const matchCat = currentCategory === "all" || item.category === currentCategory;
+        const matchSearch = !searchVal ||
+          item.title.toLowerCase().includes(searchVal) ||
+          item.description.toLowerCase().includes(searchVal) ||
+          (item.tags && item.tags.join(' ').toLowerCase().includes(searchVal));
+        return matchCat && matchSearch;
+      });
+
+      grid.innerHTML = '';
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      filtered.forEach(item => {
+        const amazonUrl = createAmazonLink(item);
+        const tagsHtml = (item.tags || []).map(t =>
+          `<span class="text-xs bg-washi border border-sumi px-2 py-0.5 rounded-full font-bold">#${t}</span>`
+        ).join('');
+
+        const card = document.createElement('article');
+        card.className = "wa-card bg-white rounded-2xl p-5 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold bg-matcha text-white px-2.5 py-0.5 rounded-full border border-sumi">${item.category}</span>
+              <span class="text-xs font-bold text-akane bg-sakura px-2 py-0.5 rounded border border-sumi">🔥 ${item.badge || '注目'}</span>
+            </div>
+            <div class="text-4xl text-center py-4 bg-washi rounded-xl border border-sumi mb-3 select-none">
+              ${item.emoji || '🎁'}
+            </div>
+            <h3 class="font-maru font-bold text-lg text-sumi leading-snug mb-2">${item.title}</h3>
+            <p class="text-xs text-gray-700 leading-relaxed mb-3">${item.description}</p>
+            <div class="bg-sakura bg-opacity-60 border-l-4 border-akane p-2.5 rounded-r-lg mb-4">
+              <p class="text-xs font-bold text-sumi">💡 推しポイント: <span class="font-normal">${item.appeal_point}</span></p>
+            </div>
+          </div>
+          <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">${tagsHtml}</div>
+            <a href="${amazonUrl}" target="_blank" rel="noopener noreferrer"
+              class="wa-btn block w-full text-center bg-akane hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm">
+              Amazonで詳細・口コミを見る ➔
+            </a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // イベントリスナー設定
+    document.getElementById('searchInput').addEventListener('input', renderProducts);
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.cat-btn').forEach(b => {
+          b.classList.remove('bg-sumi', 'text-white');
+          b.classList.add('bg-white', 'text-sumi');
+        });
+        e.currentTarget.classList.remove('bg-white', 'text-sumi');
+        e.currentTarget.classList.add('bg-sumi', 'text-white');
+        currentCategory = e.currentTarget.getAttribute('data-cat');
+        renderProducts();
+      });
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
