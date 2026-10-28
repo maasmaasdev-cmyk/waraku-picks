@@ -1,17 +1,30 @@
 import json
 import urllib.request
 import urllib.error
+import urllib.parse
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 import os
 import re
 
 DATA_FILE = "data/products.json"
+SITEMAP_FILE = "sitemap.xml"
+ROBOTS_FILE = "robots.txt"
+
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-# 高速・高精度かつ無料枠が広い gemini-2.5-flash を使用
 GEMINI_MODEL = "gemini-2.5-flash"
 
-# 巡回する世界＆国内のトレンド情報源（必要に応じて自由に追加可能）
+# GitHub Actions環境から自動で「https://ユーザー名.github.io/リポジトリ名」を特定する
+def get_site_base_url():
+    repo_full = os.environ.get("GITHUB_REPOSITORY", "") # 例: "username/waraku-picks"
+    if "/" in repo_full:
+        owner, repo = repo_full.split("/", 1)
+        if repo.lower() == f"{owner.lower()}.github.io":
+            return f"https://{owner}.github.io"
+        return f"https://{owner}.github.io/{repo}"
+    # ローカルテスト時などのデフォルト値
+    return "https://example.github.io/waraku-picks"
+
 FEEDS = [
     {
         "url": "https://www.reddit.com/r/BuyItForLife/hot/.rss?limit=6",
@@ -28,7 +41,6 @@ FEEDS = [
 ]
 
 def fetch_raw_topics():
-    """各RSSフィードから生のトレンドタイトルを収集する"""
     raw_topics = []
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; WarakuPicksBot/2.0)'}
 
@@ -39,7 +51,6 @@ def fetch_raw_topics():
                 xml_data = response.read()
                 root = ET.fromstring(xml_data)
 
-                # Atom形式 (Reddit等)
                 entries = root.findall('.//{http://www.w3.org/2005/Atom}entry')
                 if entries:
                     for entry in entries[:4]:
@@ -50,7 +61,6 @@ def fetch_raw_topics():
                                 "raw_title": title_el.text.strip()
                             })
                 else:
-                    # RSS 1.0/2.0形式 (はてなブックマーク等)
                     items = root.findall('.//{http://purl.org/rss/1.0/}item') or root.findall('.//item')
                     for item in items[:4]:
                         title_el = item.find('{http://purl.org/rss/1.0/}title')
@@ -67,7 +77,6 @@ def fetch_raw_topics():
     return raw_topics
 
 def generate_picks_with_gemini(raw_topics):
-    """Gemini APIを使って、生トピックから購買意欲をそそる日本語の商品紹介JSONを生成する"""
     if not GEMINI_API_KEY:
         print("[Info] GEMINI_API_KEY が未設定のため、フォールバック処理を実行します。")
         return fallback_transform(raw_topics)
@@ -84,17 +93,17 @@ def generate_picks_with_gemini(raw_topics):
 【作成ルール】
 1. 英語のトピックであっても、すべて自然で魅力的な**日本語**に変換すること。
 2. トピックが抽象的なニュースや雑談の場合は、そこから連想される「日本のAmazonで買える具体的な名品・便利グッズ」に昇華させること。
-3. 以下のJSON配列フォーマットのみを出力すること（Markdownのコードブロック記号は不要）。
+3. 以下のJSON配列フォーマットのみを出力すること。
 
 [
   {{
-    "title": "購買意欲を刺激する魅力的な日本語商品名（22〜38文字程度。例：【一生モノ】プロが愛用する超軽量チタン製マルチタンブラー）",
-    "category": "以下から最も適するものを1つ選択しつつ、最低2個は『世界の新着トレンド』にすること: ['世界の新着トレンド', 'ガジェット・デスク', 'キッチン・料理道具', '睡眠・ヘルスケア', '食品・ご褒美グルメ', 'ホビー・知育']",
+    "title": "購買意欲を刺激する魅力的な日本語商品名（22〜38文字程度）",
+    "category": "以下から1つ選択しつつ最低2個は『世界の新着トレンド』にすること: ['世界の新着トレンド', 'ガジェット・デスク', 'キッチン・料理道具', '睡眠・ヘルスケア', '食品・ご褒美グルメ', 'ホビー・知育']",
     "emoji": "商品の魅力を象徴する絵文字1文字",
     "badge": "短い注目バッジ（例: '海外で話題沸騰', '一生モノ名品', 'SNS急上昇', '時短の神アイテム'）",
-    "description": "商品の特徴や、なぜ今世界・日本で注目されているのかを伝える魅力的な解説文（70〜100文字程度）",
+    "description": "商品の特徴や、なぜ今注目されているのかを伝える魅力的な解説文（70〜100文字程度）",
     "appeal_point": "『これを買うと生活がどう劇的に良くなるか』を一言で刺す推しコメント（40〜60文字程度）",
-    "search_keyword": "日本のAmazon.co.jpで検索した際に、購買率の高い優良商品がズラリと並ぶ最適な日本語検索キーワード（スペース区切りで2〜4語）",
+    "search_keyword": "日本のAmazon.co.jpで検索した際に優良商品が並ぶ最適な日本語検索キーワード（スペース区切りで2〜4語）",
     "tags": ["関連タグ1", "関連タグ2", "関連タグ3"]
   }}
 ]
@@ -120,7 +129,7 @@ def generate_picks_with_gemini(raw_topics):
             text_content = res_body["candidates"][0]["content"]["parts"][0]["text"]
             generated_items = json.loads(text_content)
             if isinstance(generated_items, list) and len(generated_items) > 0:
-                print(f"[Success] Gemini APIで {len(generated_items)} 件の魅力的な商品紹介を生成しました！")
+                print(f"[Success] Gemini APIで {len(generated_items)} 件の商品紹介を生成しました！")
                 return generated_items
     except Exception as e:
         print(f"[Error] Gemini API 呼び出しエラー ({e})。フォールバック処理に切り替えます。")
@@ -128,7 +137,6 @@ def generate_picks_with_gemini(raw_topics):
     return fallback_transform(raw_topics)
 
 def fallback_transform(raw_topics):
-    """APIキー未設定時やエラー時の安全な代替処理"""
     fallback_items = []
     for t in raw_topics[:4]:
         clean = re.sub(r'\[.*?\]', '', t["raw_title"]).strip()
@@ -147,6 +155,42 @@ def fallback_transform(raw_topics):
         })
     return fallback_items
 
+def generate_seo_files(base_url, today_iso, categories):
+    """Google検索クローラー向けの sitemap.xml と robots.txt を自動生成する"""
+    urls_xml = f"""  <url>
+    <loc>{base_url}/</loc>
+    <lastmod>{today_iso}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>\n"""
+
+    # 各ジャンル別URLもインデックス対象として登録（検索流入の入り口を広げる）
+    for cat in categories:
+        encoded_cat = urllib.parse.quote(cat)
+        urls_xml += f"""  <url>
+    <loc>{base_url}/?cat={encoded_cat}</loc>
+    <lastmod>{today_iso}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>\n"""
+
+    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{urls_xml}</urlset>
+"""
+    with open(SITEMAP_FILE, "w", encoding="utf-8") as f:
+        f.write(sitemap_content)
+
+    robots_content = f"""User-agent: *
+Allow: /
+
+Sitemap: {base_url}/sitemap.xml
+"""
+    with open(ROBOTS_FILE, "w", encoding="utf-8") as f:
+        f.write(robots_content)
+
+    print(f"[SEO] {SITEMAP_FILE} と {ROBOTS_FILE} を最新日時 ({today_iso}) で自動生成しました。")
+
 def main():
     if not os.path.exists(DATA_FILE):
         print(f"[Error] {DATA_FILE} が見つかりません。")
@@ -155,31 +199,34 @@ def main():
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # 1. 手動で登録した厳選マスター商品（"is_ai_generated": True が付いていないもの）を保護
     master_items = [
         item for item in data.get("items", [])
         if not item.get("is_ai_generated", False) and item.get("category") != "世界の新着トレンド"
     ]
 
-    # 2. 世界と日本のトレンドRSSを収集
     raw_topics = fetch_raw_topics()
-
-    # 3. Gemini APIで購買意欲をそそる日本語カードに変換
     ai_items = generate_picks_with_gemini(raw_topics)
     for item in ai_items:
-        item["is_ai_generated"] = True  # 次回更新時に自動で入れ替わるようフラグを付与
+        item["is_ai_generated"] = True
 
-    # 4. 最新AIトレンド商品を先頭に配置して鮮度とクリック率を最大化（その後に定番マスター商品を配置）
     JST = timezone(timedelta(hours=9))
-    now_str = datetime.now(JST).strftime("%Y-%m-%d %H:%M JST")
+    now_dt = datetime.now(JST)
+    now_str = now_dt.strftime("%Y-%m-%d %H:%M JST")
+    today_iso = now_dt.strftime("%Y-%m-%d")
 
+    all_items = ai_items + master_items
     data["updated_at"] = now_str
-    data["items"] = ai_items + master_items
+    data["items"] = all_items
 
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    print(f"[Done] {DATA_FILE} を更新しました ({now_str})")
+    # サイトマップ＆robots.txtの自動生成
+    base_url = get_site_base_url()
+    categories = sorted(list(set(item.get("category", "") for item in all_items if item.get("category"))))
+    generate_seo_files(base_url, today_iso, categories)
+
+    print(f"[Done] すべての自動更新が完了しました ({now_str})")
 
 if __name__ == "__main__":
     main()
