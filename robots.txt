@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maasmaasdev-cmyk.github.io/waraku-picks/sitemap.xml
