@@ -8,21 +8,21 @@ import os
 import re
 
 DATA_FILE = "data/products.json"
+SNS_POST_FILE = "data/sns_post.txt"
 SITEMAP_FILE = "sitemap.xml"
 ROBOTS_FILE = "robots.txt"
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = "gemini-2.5-flash"
 
-# GitHub Actions環境から自動で「https://ユーザー名.github.io/リポジトリ名」を特定する
 def get_site_base_url():
-    repo_full = os.environ.get("GITHUB_REPOSITORY", "") # 例: "username/waraku-picks"
+    """GitHub Actions環境から自動で公開URLを特定する"""
+    repo_full = os.environ.get("GITHUB_REPOSITORY", "")
     if "/" in repo_full:
         owner, repo = repo_full.split("/", 1)
         if repo.lower() == f"{owner.lower()}.github.io":
             return f"https://{owner}.github.io"
         return f"https://{owner}.github.io/{repo}"
-    # ローカルテスト時などのデフォルト値
     return "https://example.github.io/waraku-picks"
 
 FEEDS = [
@@ -155,8 +155,73 @@ def fallback_transform(raw_topics):
         })
     return fallback_items
 
+def generate_sns_posts(ai_items, base_url, today_iso):
+    """本日生成されたトレンド商品から、X(旧Twitter)およびnote用のコピペ宣伝文を生成する"""
+    top3 = ai_items[:3] if len(ai_items) >= 3 else ai_items
+    top1 = top3[0] if top3 else {"title": "世界のトレンド名品", "emoji": "🎁", "appeal_point": "毎日の暮らしが劇的に整う逸品"}
+
+    # パターン1: X(Twitter) まとめ紹介型（最もクリック率が高い王道フォーマット）
+    bullets = "\n".join([f"{item.get('emoji', '✨')} {item.get('title')}" for item in top3])
+    x_post_summary = (
+        f"【{today_iso} 世界と日本のトレンド特選🍵】\n"
+        f"海外の「一生モノ名品」や国内ライフスタイルトレンドから、今すぐ欲しくなる注目アイテムを更新しました！\n\n"
+        f"{bullets}\n\n"
+        f"👇1秒で探せる特選カタログ＆Amazon口コミはこちら\n"
+        f"{base_url}/\n"
+        f"#買ってよかった #便利グッズ #ガジェット #暮らしを整える"
+    )
+
+    # パターン2: X(Twitter) 1点突破・共感フック型
+    x_post_single = (
+        f"いま海外・SNSのトレンドで注目されているこれ、暮らしの質が一段上がる名品です👇\n\n"
+        f"{top1.get('emoji', '🔥')} {top1.get('title')}\n"
+        f"💡 {top1.get('appeal_point', '')}\n\n"
+        f"他にも時短キッチン道具や睡眠ケアなど本日の特選ラインナップを公開中！\n"
+        f"{base_url}/\n"
+        f"#Amazonおすすめ #QOL向上 #一生モノ"
+    )
+
+    # パターン3: note / ブログ記事末尾・つぶやき用Markdownテンプレート
+    note_lines = [
+        f"## 🍵 本日の「和楽百貨 (WARAKU PICKS)」世界トレンド特選（{today_iso} 更新）",
+        "",
+        "海外のガジェット・一生モノ名品コミュニティ（Reddit等）や国内の暮らしトレンドから、本日特に注目度が高いアイテムをピックアップしました。",
+        ""
+    ]
+    for idx, item in enumerate(top3, 1):
+        note_lines.append(f"### {idx}. {item.get('emoji', '🎁')} {item.get('title')} （{item.get('badge', '注目')}）")
+        note_lines.append(f"- **特徴**: {item.get('description', '')}")
+        note_lines.append(f"- **推しポイント**: {item.get('appeal_point', '')}")
+        note_lines.append("")
+
+    note_lines.append(f"👉 **[全ジャンルの検索・Amazonでの詳細や口コミチェックはこちら（和楽百貨）]({base_url}/)**")
+    note_markdown = "\n".join(note_lines)
+
+    # テキストファイル(data/sns_post.txt)へわかりやすく保存
+    full_text_output = (
+        f"=========================================\n"
+        f"📅 {today_iso} 自動生成 SNS・note 宣伝コピペ帳\n"
+        f"=========================================\n\n"
+        f"--- 【1】X (旧Twitter) 王道まとめポスト（コピペ用） ---\n"
+        f"{x_post_summary}\n\n"
+        f"--- 【2】X (旧Twitter) 1点突破・QOL訴求ポスト（コピペ用） ---\n"
+        f"{x_post_single}\n\n"
+        f"--- 【3】note・ブログ・メルマガ貼り付け用 (Markdown) ---\n"
+        f"{note_markdown}\n"
+    )
+
+    with open(SNS_POST_FILE, "w", encoding="utf-8") as f:
+        f.write(full_text_output)
+
+    print(f"[SNS] {SNS_POST_FILE} に本日のコピペ用宣伝ポストを自動生成しました。")
+
+    return {
+        "x_summary": x_post_summary,
+        "x_single": x_post_single,
+        "note_md": note_markdown
+    }
+
 def generate_seo_files(base_url, today_iso, categories):
-    """Google検索クローラー向けの sitemap.xml と robots.txt を自動生成する"""
     urls_xml = f"""  <url>
     <loc>{base_url}/</loc>
     <lastmod>{today_iso}</lastmod>
@@ -164,7 +229,6 @@ def generate_seo_files(base_url, today_iso, categories):
     <priority>1.0</priority>
   </url>\n"""
 
-    # 各ジャンル別URLもインデックス対象として登録（検索流入の入り口を広げる）
     for cat in categories:
         encoded_cat = urllib.parse.quote(cat)
         urls_xml += f"""  <url>
@@ -214,15 +278,19 @@ def main():
     now_str = now_dt.strftime("%Y-%m-%d %H:%M JST")
     today_iso = now_dt.strftime("%Y-%m-%d")
 
+    base_url = get_site_base_url()
+
+    # SNS宣伝文を生成し、テキストファイル保存＆JSON内にも格納
+    sns_posts = generate_sns_posts(ai_items, base_url, today_iso)
+
     all_items = ai_items + master_items
     data["updated_at"] = now_str
+    data["sns_posts"] = sns_posts
     data["items"] = all_items
 
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    # サイトマップ＆robots.txtの自動生成
-    base_url = get_site_base_url()
     categories = sorted(list(set(item.get("category", "") for item in all_items if item.get("category"))))
     generate_seo_files(base_url, today_iso, categories)
 
