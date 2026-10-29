@@ -1,14 +1,32 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>和楽百貨 (WARAKU PICKS) | 世界と日本の「今すぐ欲しい」が集まる特選案内所</title>
-  <meta name="description" content="世界中のトレンドから厳選したガジェット、キッチン道具、暮らしの逸品、グルメ・ヘルスケアまで。毎日自動更新でお届けする和モダン・キュレーションサイト。">
-  <!-- Google Fonts: 見出しに風合いのある明朝・丸ゴシック、本文に読みやすいゴシック -->
+  <meta name="description" content="世界中のトレンドから厳選したガジェット、キッチン道具、睡眠・ヘルスケア、ご褒美グルメ、知育ボードゲームまで。毎日AI自動更新でお届けする和モダン・キュレーションサイト。">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+
+  <!-- ファビコン（ogp.svgを兼用） -->
+  <link rel="icon" href="./ogp.svg" type="image/svg+xml">
+
+  <!-- OGP (Open Graph Protocol) & Twitter Card 設定 -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="和楽百貨 (WARAKU PICKS)">
+  <meta property="og:title" content="和楽百貨 (WARAKU PICKS) | 世界と日本の「今すぐ欲しい」が集まる特選案内所">
+  <meta property="og:description" content="海外の最新ガジェットから時短キッチン道具、睡眠ケア、ご褒美グルメまで。毎日自動更新で「買ってよかった名品」が1秒で見つかる和モダン案内所。">
+  <meta property="og:locale" content="ja_JP">
+  <!-- SNSカード用画像（美しい和モダンカラーの動的プレースホルダー＋ogp.svg） -->
+  <meta property="og:image" content="https://placehold.jp/3d4070/ffffff/1200x630.png?text=%E3%80%90%E5%92%8C%E6%A5%BD%E7%99%BE%E8%B2%A8%E3%80%91%0A%E4%B8%96%E7%95%8C%E3%81%A8%E6%97%A5%E6%9C%AC%E3%81%AE%E3%80%8C%E4%BB%8A%E3%81%99%E3%81%90%E6%AC%B2%E3%81%97%E3%81%84%E3%80%8D%E7%89%B9%E9%81%B8%E6%A1%88%E5%86%85%E6%89%80&css=%7B%22background-color%22%3A%22%23FAF7F0%22%2C%22color%22%3A%22%232B2B2B%22%2C%22border%22%3A%2216px%20solid%20%23D9381E%22%2C%22font-weight%22%3A%22bold%22%7D">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="和楽百貨 (WARAKU PICKS) | 世界のトレンド名品・特選案内所">
+  <meta name="twitter:description" content="世界中から厳選したガジェット・料理道具・暮らしの名品を毎日AIが自動収集！欲しいモノが1秒で見つかります。">
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -66,6 +84,45 @@
       height: 8px;
     }
   </style>
+
+  <!-- ① 静的 構造化データ (WebSite & FAQPage) : Google検索結果での表示をリッチ化 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "和楽百貨 (WARAKU PICKS)",
+        "description": "世界と日本のトレンドから「暮らしが整う・心が躍る」逸品を毎日自動収集する特選キュレーションサイト",
+        "inLanguage": "ja"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "和楽百貨（WARAKU PICKS）のトレンド商品はどれくらいの頻度で更新されますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "毎日朝6時（日本時間）に世界中のトレンドコミュニティ（Reddit等）や国内のライフスタイルトレンドを自動巡回し、最新の名品・注目アイテムへ自動更新しています。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "紹介されている商品はどこで購入できますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "各商品の「Amazonで詳細・口コミを見る」ボタンから、日本のAmazon.co.jpの商品ページおよび関連ベストセラー一覧へ直接アクセスして安全にご購入いただけます。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- ② 動的 構造化データ (ItemList) : JSで最新のproducts.jsonから自動生成して挿入 -->
+  <script id="dynamicJsonLd" type="application/ld+json"></script>
 </head>
 <body class="font-sans min-h-screen flex flex-col">
 
@@ -76,9 +133,12 @@
   <header class="bg-washi border-b-2 border-sumi sticky top-0 z-30 bg-opacity-95 backdrop-blur-sm">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <span class="bg-akane text-white font-maru text-xl px-3 py-1 rounded-full border-2 border-sumi shadow-sm">選</span>
+        <a href="./" class="bg-akane text-white font-maru text-xl px-3 py-1 rounded-full border-2 border-sumi shadow-sm hover:opacity-90">選</a>
         <div>
-          <h1 class="font-maru text-2xl md:text-3xl font-bold tracking-wider text-sumi">和楽百貨 <span class="text-sm font-sans font-normal bg-sakura px-2 py-0.5 rounded border border-sumi ml-1">WARAKU PICKS</span></h1>
+          <h1 class="font-maru text-2xl md:text-3xl font-bold tracking-wider text-sumi">
+            <a href="./">和楽百貨</a>
+            <span class="text-sm font-sans font-normal bg-sakura px-2 py-0.5 rounded border border-sumi ml-1">WARAKU PICKS</span>
+          </h1>
           <p class="text-xs text-gray-600 mt-0.5">世界と日本のトレンドから「暮らしが整う・心が躍る」逸品を毎日自動収集</p>
         </div>
       </div>
@@ -92,31 +152,42 @@
     </div>
   </header>
 
-  <!-- ヒーローバナー & 本日のトレンド速報 -->
+  <!-- ヒーローバナー & SNSシェアボタン -->
   <section class="max-w-6xl mx-auto px-4 pt-6 pb-2 w-full">
-    <div class="bg-sakura border-2 border-sumi rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4" style="box-shadow: 4px 4px 0px #2B2B2B;">
+    <div class="bg-sakura border-2 border-sumi rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4" style="box-shadow: 4px 4px 0px #2B2B2B;">
       <div>
         <span class="inline-block bg-matcha text-white text-xs font-bold px-2.5 py-1 rounded-full border border-sumi mb-2">✨ 毎日自動更新・世界のトレンド巡回中</span>
         <h2 class="font-maru text-xl md:text-2xl font-bold text-sumi">「それどこの？」と聞かれる、名品・話題作をすぐ発見。</h2>
         <p class="text-sm text-gray-700 mt-1">海外の最新ガジェットから、時短キッチン道具、疲れを癒やすヘルスケア、ご褒美グルメまで。ジャンルボタンや検索から1秒で見つかります。</p>
       </div>
-      <div class="text-right shrink-0">
-        <div class="text-xs text-gray-600">最終自動巡回日時</div>
-        <div id="lastUpdated" class="font-bold text-sm bg-white px-3 py-1 rounded-lg border border-sumi mt-1 inline-block">読み込み中...</div>
+      <div class="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between w-full md:w-auto gap-3 shrink-0">
+        <div class="text-left md:text-right">
+          <div class="text-xs text-gray-600">最終自動巡回日時</div>
+          <div id="lastUpdated" class="font-bold text-sm bg-white px-3 py-1 rounded-lg border border-sumi mt-1 inline-block">読み込み中...</div>
+        </div>
+        <!-- SNSワンクリックシェアボタン -->
+        <div class="flex gap-2">
+          <button id="shareXBtn" class="wa-btn bg-sumi text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+            𝕏 でシェア
+          </button>
+          <button id="copyUrlBtn" class="wa-btn bg-white text-sumi text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+            🔗 URLコピー
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ジャンル切り替えナビゲーション -->
-  <nav class="max-w-6xl mx-auto px-4 py-4 w-full overflow-x-auto">
+  <nav class="max-w-6xl mx-auto px-4 py-4 w-full overflow-x-auto" aria-label="商品ジャンルナビゲーション">
     <div id="categoryTabs" class="flex gap-2 pb-2">
       <button data-cat="all" class="cat-btn wa-btn bg-sumi text-white px-4 py-1.5 rounded-full text-sm font-bold shrink-0">すべて表示</button>
+      <button data-cat="世界の新着トレンド" class="cat-btn wa-btn bg-kincha text-white px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🌍 世界の新着トレンド</button>
       <button data-cat="ガジェット・デスク" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">💻 ガジェット・デスク</button>
       <button data-cat="キッチン・料理道具" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🍳 キッチン・料理道具</button>
       <button data-cat="睡眠・ヘルスケア" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🌿 睡眠・ヘルスケア</button>
       <button data-cat="食品・ご褒美グルメ" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🍵 食品・ご褒美グルメ</button>
       <button data-cat="ホビー・知育" class="cat-btn wa-btn bg-white text-sumi px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🎲 ホビー・知育</button>
-      <button data-cat="世界の新着トレンド" class="cat-btn wa-btn bg-kincha text-white px-4 py-1.5 rounded-full text-sm font-bold shrink-0">🌍 世界の新着トレンド</button>
     </div>
   </nav>
 
@@ -130,8 +201,28 @@
     </div>
   </main>
 
+  <!-- SEO＆読者安心のためのQ&Aミニセクション -->
+  <section class="max-w-6xl mx-auto px-4 py-8 w-full">
+    <div class="bg-white border-2 border-sumi rounded-2xl p-6" style="box-shadow: 4px 4px 0px #2B2B2B;">
+      <h2 class="font-maru text-lg font-bold text-sumi mb-4 flex items-center gap-2">
+        <span class="bg-matcha text-white text-xs px-2.5 py-1 rounded-full border border-sumi">案内</span>
+        和楽百貨（WARAKU PICKS）の楽しみ方・よくあるご質問
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed text-gray-700">
+        <div class="bg-washi p-4 rounded-xl border border-sumi">
+          <h3 class="font-bold text-sumi text-sm mb-1">Q. どんな基準で商品が選ばれていますか？</h3>
+          <p>海外の「一生モノ名品コミュニティ（BuyItForLife）」や最新ガジェットトレンド、国内の暮らしの注目トピックを毎日自動巡回し、実用性と満足度が高いアイテムを厳選しています。</p>
+        </div>
+        <div class="bg-washi p-4 rounded-xl border border-sumi">
+          <h3 class="font-bold text-sumi text-sm mb-1">Q. 欲しい商品の口コミや最新価格を見るには？</h3>
+          <p>各カードの「Amazonで詳細・口コミを見る」ボタンを押すと、Amazon.co.jpの該当アイテムや高評価ランキング一覧へ直接移動し、リアルタイムの価格やレビューをご確認いただけます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- フッター（Amazonアソシエイト必須表記含む） -->
-  <footer class="bg-sumi text-washi mt-12 py-8 border-t-4 border-akane">
+  <footer class="bg-sumi text-washi mt-8 py-8 border-t-4 border-akane">
     <div class="max-w-6xl mx-auto px-4 text-center text-xs space-y-2">
       <p class="font-maru text-base text-white">和楽百貨 (WARAKU PICKS)</p>
       <p class="text-gray-300">※当サイトはAmazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、Amazonアソシエイト・プログラムの参加者です。</p>
@@ -139,7 +230,7 @@
     </div>
   </footer>
 
-  <!-- フロントエンド制御スクリプト -->
+  <!-- フロントエンド制御＆動的SEOスクリプト -->
   <script>
     // ★ここにあなたのAmazonアソシエイトID（トラッキングID）を設定してください★
     const AMAZON_TAG = "j2001077maasm-22";
@@ -147,15 +238,21 @@
     let allProducts = [];
     let currentCategory = "all";
 
-    async function loadProducts() {
-      try {
-        const res = await fetch('./data/products.json?t=' + new Date().getTime());
-        const data = await res.json();
-        allProducts = data.items || [];
-        document.getElementById('lastUpdated').textContent = data.updated_at || '本日更新';
-        renderProducts();
-      } catch (e) {
-        console.error("データ読み込みエラー:", e);
+    // URLパラメータ (?cat=...) があれば初期カテゴリとして自動選択（sitemap.xmlとの連動）
+    function checkUrlCategoryParam() {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('cat');
+      if (catParam) {
+        currentCategory = catParam;
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+          if (btn.getAttribute('data-cat') === catParam) {
+            btn.classList.remove('bg-white', 'text-sumi', 'bg-kincha');
+            btn.classList.add('bg-sumi', 'text-white');
+          } else {
+            btn.classList.remove('bg-sumi', 'text-white');
+            btn.classList.add('bg-white', 'text-sumi');
+          }
+        });
       }
     }
 
@@ -165,6 +262,47 @@
       }
       const query = encodeURIComponent(item.search_keyword || item.title);
       return `https://www.amazon.co.jp/s?k=${query}&tag=${AMAZON_TAG}`;
+    }
+
+    // Google検索エンジン向けに商品一覧の構造化データ(ItemList)を動的に注入
+    function updateDynamicJsonLd(items) {
+      const itemListElements = items.slice(0, 15).map((item, idx) => ({
+        "@type": "ListItem",
+        "position": idx + 1,
+        "item": {
+          "@type": "Thing",
+          "name": item.title,
+          "description": `${item.description} （推しポイント：${item.appeal_point}）`,
+          "url": createAmazonLink(item)
+        }
+      }));
+
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "和楽百貨 本日の特選トレンドアイテム一覧",
+        "numberOfItems": itemListElements.length,
+        "itemListElement": itemListElements
+      };
+
+      const scriptEl = document.getElementById('dynamicJsonLd');
+      if (scriptEl) {
+        scriptEl.textContent = JSON.stringify(structuredData);
+      }
+    }
+
+    async function loadProducts() {
+      checkUrlCategoryParam();
+      try {
+        const res = await fetch('./data/products.json?t=' + new Date().getTime());
+        const data = await res.json();
+        allProducts = data.items || [];
+        document.getElementById('lastUpdated').textContent = data.updated_at || '本日更新';
+        updateDynamicJsonLd(allProducts);
+        renderProducts();
+      } catch (e) {
+        console.error("データ読み込みエラー:", e);
+      }
     }
 
     function renderProducts() {
@@ -231,11 +369,38 @@
           b.classList.remove('bg-sumi', 'text-white');
           b.classList.add('bg-white', 'text-sumi');
         });
-        e.currentTarget.classList.remove('bg-white', 'text-sumi');
+        e.currentTarget.classList.remove('bg-white', 'text-sumi', 'bg-kincha');
         e.currentTarget.classList.add('bg-sumi', 'text-white');
         currentCategory = e.currentTarget.getAttribute('data-cat');
+
+        // URLパラメータも履歴を汚さずに同期（シェアしやすくする）
+        const url = new URL(window.location);
+        if (currentCategory === 'all') {
+          url.searchParams.delete('cat');
+        } else {
+          url.searchParams.set('cat', currentCategory);
+        }
+        window.history.replaceState({}, '', url);
+
         renderProducts();
       });
+    });
+
+    // X (Twitter) シェアボタン
+    document.getElementById('shareXBtn').addEventListener('click', () => {
+      const shareUrl = window.location.href;
+      const shareText = "【和楽百貨 WARAKU PICKS】世界と日本のトレンドから厳選！今すぐ欲しくなるガジェット・キッチン道具・暮らしの名品案内所🍵✨";
+      const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(twitterIntent, '_blank', 'noopener,noreferrer');
+    });
+
+    // URLコピーボタン
+    document.getElementById('copyUrlBtn').addEventListener('click', (e) => {
+      navigator.clipboard.writeText(window.location.href);
+      const btn = e.currentTarget;
+      const orig = btn.innerHTML;
+      btn.innerHTML = "✅ コピー完了！";
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
     });
 
     loadProducts();
