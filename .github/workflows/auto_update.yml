@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: トレンド収集＆Geminiコピー生成の実行
+      - name: トレンド収集＆Geminiコピー・SNS文生成の実行
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/update_trends.py
@@ -30,5 +30,5 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions Bot"
-          git add data/products.json sitemap.xml robots.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: Gemini AIによるトレンド商品データの自動更新" && git push)
+          git add data/products.json data/sns_post.txt sitemap.xml robots.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: トレンド商品・SNS宣伝文・SEOデータの自動更新" && git push)
