@@ -16,7 +16,6 @@
   <meta property="og:title" content="和楽百貨 (WARAKU PICKS) | 世界と日本の「今すぐ欲しい」が集まる特選案内所">
   <meta property="og:description" content="海外の最新ガジェットから時短キッチン道具、睡眠ケア、ご褒美グルメまで。毎日自動更新で「買ってよかった名品」が1秒で見つかる和モダン案内所。">
   <meta property="og:locale" content="ja_JP">
-  <!-- SNSカード用画像（美しい和モダンカラーの動的プレースホルダー＋ogp.svg） -->
   <meta property="og:image" content="https://placehold.jp/3d4070/ffffff/1200x630.png?text=%E3%80%90%E5%92%8C%E6%A5%BD%E7%99%BE%E8%B2%A8%E3%80%91%0A%E4%B8%96%E7%95%8C%E3%81%A8%E6%97%A5%E6%9C%AC%E3%81%AE%E3%80%8C%E4%BB%8A%E3%81%99%E3%81%90%E6%AC%B2%E3%81%97%E3%81%84%E3%80%8D%E7%89%B9%E9%81%B8%E6%A1%88%E5%86%85%E6%89%80&css=%7B%22background-color%22%3A%22%23FAF7F0%22%2C%22color%22%3A%22%232B2B2B%22%2C%22border%22%3A%2216px%20solid%20%23D9381E%22%2C%22font-weight%22%3A%22bold%22%7D">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="和楽百貨 (WARAKU PICKS) | 世界のトレンド名品・特選案内所">
@@ -34,12 +33,12 @@
       theme: {
         extend: {
           colors: {
-            washi: '#FAF7F0',     // 生成り（背景）
-            sumi: '#2B2B2B',      // 墨色（文字）
-            akane: '#D9381E',     // 茜色（メインCTA）
-            matcha: '#3B6E52',    // 抹茶（バッジ・カテゴリ）
-            kincha: '#C88A2B',    // 金茶（トレンド・星）
-            sakura: '#F6E6E4'     // 桜鼠（カードアクセント）
+            washi: '#FAF7F0',
+            sumi: '#2B2B2B',
+            akane: '#D9381E',
+            matcha: '#3B6E52',
+            kincha: '#C88A2B',
+            sakura: '#F6E6E4'
           },
           fontFamily: {
             maru: ['"Kiwi Maru"', 'serif'],
@@ -85,7 +84,7 @@
     }
   </style>
 
-  <!-- ① 静的 構造化データ (WebSite & FAQPage) : Google検索結果での表示をリッチ化 -->
+  <!-- 構造化データ (WebSite & FAQPage) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -120,8 +119,6 @@
     ]
   }
   </script>
-
-  <!-- ② 動的 構造化データ (ItemList) : JSで最新のproducts.jsonから自動生成して挿入 -->
   <script id="dynamicJsonLd" type="application/ld+json"></script>
 </head>
 <body class="font-sans min-h-screen flex flex-col">
@@ -165,10 +162,10 @@
           <div class="text-xs text-gray-600">最終自動巡回日時</div>
           <div id="lastUpdated" class="font-bold text-sm bg-white px-3 py-1 rounded-lg border border-sumi mt-1 inline-block">読み込み中...</div>
         </div>
-        <!-- SNSワンクリックシェアボタン -->
+        <!-- AI自動生成ポスト連動型 𝕏 シェアボタン -->
         <div class="flex gap-2">
-          <button id="shareXBtn" class="wa-btn bg-sumi text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
-            𝕏 でシェア
+          <button id="shareXBtn" class="wa-btn bg-sumi text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-gray-800">
+            𝕏 本日のポストを投稿
           </button>
           <button id="copyUrlBtn" class="wa-btn bg-white text-sumi text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
             🔗 URLコピー
@@ -201,7 +198,7 @@
     </div>
   </main>
 
-  <!-- SEO＆読者安心のためのQ&Aミニセクション -->
+  <!-- FAQミニセクション -->
   <section class="max-w-6xl mx-auto px-4 py-8 w-full">
     <div class="bg-white border-2 border-sumi rounded-2xl p-6" style="box-shadow: 4px 4px 0px #2B2B2B;">
       <h2 class="font-maru text-lg font-bold text-sumi mb-4 flex items-center gap-2">
@@ -221,7 +218,7 @@
     </div>
   </section>
 
-  <!-- フッター（Amazonアソシエイト必須表記含む） -->
+  <!-- フッター -->
   <footer class="bg-sumi text-washi mt-8 py-8 border-t-4 border-akane">
     <div class="max-w-6xl mx-auto px-4 text-center text-xs space-y-2">
       <p class="font-maru text-base text-white">和楽百貨 (WARAKU PICKS)</p>
@@ -230,15 +227,15 @@
     </div>
   </footer>
 
-  <!-- フロントエンド制御＆動的SEOスクリプト -->
+  <!-- フロントエンド制御スクリプト -->
   <script>
     // ★ここにあなたのAmazonアソシエイトID（トラッキングID）を設定してください★
-    const AMAZON_TAG = "j2001077maasm-22";
+    const AMAZON_TAG = "YOUR_ASSOCIATE_ID-22";
 
     let allProducts = [];
     let currentCategory = "all";
+    let latestSnsPost = ""; // AI自動生成された最新SNSポスト文面を保持
 
-    // URLパラメータ (?cat=...) があれば初期カテゴリとして自動選択（sitemap.xmlとの連動）
     function checkUrlCategoryParam() {
       const params = new URLSearchParams(window.location.search);
       const catParam = params.get('cat');
@@ -264,7 +261,6 @@
       return `https://www.amazon.co.jp/s?k=${query}&tag=${AMAZON_TAG}`;
     }
 
-    // Google検索エンジン向けに商品一覧の構造化データ(ItemList)を動的に注入
     function updateDynamicJsonLd(items) {
       const itemListElements = items.slice(0, 15).map((item, idx) => ({
         "@type": "ListItem",
@@ -291,13 +287,19 @@
       }
     }
 
-    async function ducts() {
+    async function loadProducts() {
       checkUrlCategoryParam();
       try {
         const res = await fetch('./data/products.json?t=' + new Date().getTime());
         const data = await res.json();
         allProducts = data.items || [];
         document.getElementById('lastUpdated').textContent = data.updated_at || '本日更新';
+
+        // python側で生成された最新SNSポスト（x_summary）を自動取得して保持
+        if (data.sns_posts && data.sns_posts.x_summary) {
+          latestSnsPost = data.sns_posts.x_summary;
+        }
+
         updateDynamicJsonLd(allProducts);
         renderProducts();
       } catch (e) {
@@ -373,7 +375,6 @@
         e.currentTarget.classList.add('bg-sumi', 'text-white');
         currentCategory = e.currentTarget.getAttribute('data-cat');
 
-        // URLパラメータも履歴を汚さずに同期（シェアしやすくする）
         const url = new URL(window.location);
         if (currentCategory === 'all') {
           url.searchParams.delete('cat');
@@ -386,11 +387,14 @@
       });
     });
 
-    // X (Twitter) シェアボタン
+    // 𝕏 シェアボタン（AI生成の最新トレンドまとめポストと完全自動連動）
     document.getElementById('shareXBtn').addEventListener('click', () => {
-      const shareUrl = window.location.href;
-      const shareText = "【和楽百貨 WARAKU PICKS】世界と日本のトレンドから厳選！今すぐ欲しくなるガジェット・キッチン道具・暮らしの名品案内所🍵✨";
-      const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      let postText = latestSnsPost;
+      if (!postText) {
+        // 万が一データ読み込み前などの場合のフォールバック
+        postText = `【和楽百貨 WARAKU PICKS】世界と日本のトレンドから厳選！今すぐ欲しくなるガジェット・キッチン道具・暮らしの名品案内所🍵✨\n${window.location.href}\n#買ってよかった #便利グッズ #QOL向上`;
+      }
+      const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(postText)}`;
       window.open(twitterIntent, '_blank', 'noopener,noreferrer');
     });
 
